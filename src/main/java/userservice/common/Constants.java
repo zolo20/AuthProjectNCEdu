@@ -1,8 +1,5 @@
 package userservice.common;
 
-/**
- * Created by Kirill Zhitelev on 13.05.2018.
- */
 public final class Constants {
 
     public static final String HEADER_PREFIX = "Bearer ";
