@@ -9,12 +9,11 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import userservice.common.JWTUtils;
 import userservice.model.UserEntity;
-import userservice.service.UserDetailsServiceImpl;
+import userservice.repository.UserRepository;
 
 
 import javax.servlet.FilterChain;
@@ -27,21 +26,19 @@ import static userservice.common.Constants.*;
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserRepository userRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private String role;
-
+    private String login;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             UserEntity userEntity = objectMapper
                     .readValue(request.getInputStream(), UserEntity.class);
-            role = userDetailsService.getRole(userEntity.getLogin());
+            login = userEntity.getEmail();
             final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    userEntity.getLogin(), userEntity.getPassword()
+                    userEntity.getEmail(), userEntity.getPassword()
             );
-
             return getAuthenticationManager().authenticate(token);
         } catch (IOException e) {
             throw new InternalAuthenticationServiceException("Error while sign in", e);
@@ -50,9 +47,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
-        String token = JWTUtils.generateToken(((User) authResult.getPrincipal()).getUsername());
+        UserEntity userEntity = userRepository.getUserByEmail(login);
+        String token = JWTUtils.generateToken(userEntity.getUserID(), userEntity.getEmail(), userEntity.getName(), userEntity.getSurname(),userEntity.getRole());
         response.addHeader(AUTH_HEADER, HEADER_PREFIX  + token);
-        response.addHeader(ROLE, role);
     }
 
     @Override

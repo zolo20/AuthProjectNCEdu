@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -18,18 +19,17 @@ import userservice.service.UserDetailsServiceImpl;
 @EnableWebSecurity
 public class ConfigureAuthentication extends WebSecurityConfigurerAdapter {
 
+
     private final UserDetailsServiceImpl userDetailsService;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ConfigureAuthentication(UserDetailsServiceImpl userDetailsService, PasswordEncoder passwordEncoder) {
+    public ConfigureAuthentication(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ConfigureAuthentication extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                     .authorizeRequests()
-                    .antMatchers("/signUp").permitAll()
+                    .antMatchers("/signUp", "/reset-password").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .addFilter(authenticationFilter())
@@ -51,6 +51,11 @@ public class ConfigureAuthentication extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public CorsFilter corsFilter() {
         return new CorsFilter();
     }
@@ -59,7 +64,7 @@ public class ConfigureAuthentication extends WebSecurityConfigurerAdapter {
     public AuthenticationFilter authenticationFilter() throws Exception {
         final AuthenticationFilter authenticationFilter = new AuthenticationFilter();
         authenticationFilter.setAuthenticationManager(authenticationManagerBean());
-        authenticationFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/logIn", "POST"));
+        authenticationFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/join", "POST"));
         return authenticationFilter;
     }
 }

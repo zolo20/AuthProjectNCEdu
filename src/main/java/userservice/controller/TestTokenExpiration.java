@@ -9,10 +9,11 @@ import userservice.common.Constants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Iterator;
 
 @RestController
 @RequestMapping(value = "/test")
-public class TestReq {
+public class TestTokenExpiration {
 
     @GetMapping
     public String hello() {

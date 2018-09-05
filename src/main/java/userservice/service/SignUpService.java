@@ -22,10 +22,10 @@ public class SignUpService {
     }
 
     public UserEntity saveUser(UserFormSignUp userFormSignUp) {
-        if (userRepository.getUserByLogin(userFormSignUp.getLogin()) == null) {
+        if (userRepository.getUserByEmail(userFormSignUp.getEmail()) == null) {
             UserEntity userEntity = UserEntity
                     .builder()
-                        .login(userFormSignUp.getLogin())
+                        .email(userFormSignUp.getEmail())
                         .password(passwordEncoder.encode(userFormSignUp.getPassword()))
                         .name(userFormSignUp.getName())
                         .surname(userFormSignUp.getSurname())

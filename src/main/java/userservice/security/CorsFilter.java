@@ -18,8 +18,8 @@ public class CorsFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Role, content-type, Authorization, Cache-Control");
-        response.addHeader("Access-Control-Expose-Headers", "Authorization, Role");
+        response.setHeader("Access-Control-Allow-Headers", "content-type, Authorization, Cache-Control");
+        response.addHeader("Access-Control-Expose-Headers", "Authorization");
         if ("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {

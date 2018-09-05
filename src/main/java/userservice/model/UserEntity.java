@@ -22,7 +22,7 @@ public class UserEntity {
 
     @Basic
     @Column(nullable = false, unique = true)
-    private String login;
+    private String email;
 
     @Basic
     @Column(nullable = false)

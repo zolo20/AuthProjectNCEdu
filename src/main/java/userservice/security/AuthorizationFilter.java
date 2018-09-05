@@ -30,7 +30,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             } else {
-                final String login = JWTUtils.getSubject(token);
+                final String login = JWTUtils.getAudience(token).get(1);
                 if (login != null) {
                     final UsernamePasswordAuthenticationToken authentication
                             = new UsernamePasswordAuthenticationToken(login, null, new ArrayList<>());

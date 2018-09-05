@@ -21,9 +21,8 @@ public class SignUpController {
 
     @PostMapping
     public ResponseEntity<?> postSignUp(@RequestBody UserFormSignUp userFormSignUp) {
-        UserEntity us = signUpService.saveUser(userFormSignUp);
-        System.out.println(us);
-        if (us != null) {
+        UserEntity user = signUpService.saveUser(userFormSignUp);
+        if (user != null) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

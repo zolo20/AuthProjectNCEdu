@@ -1,12 +1,14 @@
 package userservice.forms;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
+@Builder
 @ToString
 public class UserFormSignUp {
-    private String login;
+    private String email;
     private String password;
     private String name;
     private String surname;
